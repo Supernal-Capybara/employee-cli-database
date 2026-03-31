@@ -1,5 +1,5 @@
 id,name,department,position,salary,status
-2,emily janacek,it,computer programmer,80000,full-time
+2,emily janacek,it,computer programmer,80000,part-time
 3,aylin ceres,security,detective,75000,contract
-4,ekaterina kosidowski,engineering,mechanical engineer,120000,full-time
-5,marie salazar,accounting,accountant,90000,full-time
+5,marie salazar,accounting,accountant,90000,contract
+6,ekaterina kosidowski,engineering,mechanical engineering,120000,full-time

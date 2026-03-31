@@ -40,11 +40,11 @@ def view_employees(path):
     try:
         with sqlite3.connect(path) as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM ujc")
+            cur.execute("SELECT * FROM ujc ORDER BY id")
             rows = cur.fetchall()
             if rows:
                 for id, name, department, position, salary, status in rows:
-                    print(f"{id} | {name.title():<22} | {department.title():<12} | {position.title():<20} | {salary:<6} | {status.title()}")
+                    print(f"{id} | {name.title():<22} | {department.title():<12} | {position.title():<22} | {salary:<6} | {status.title()}")
             else:
                 print("No employees found.")
                 
@@ -98,7 +98,7 @@ def export_to_csv(path, csv_path):
     try:
         with sqlite3.connect(path) as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM ujc")
+            cur.execute("SELECT * FROM ujc ORDER BY id")
             rows = cur.fetchall()
             if rows:
                 with open(csv_path, "w", encoding="utf-8", newline="") as outfile:
@@ -113,6 +113,24 @@ def export_to_csv(path, csv_path):
     except sqlite3.Error as e:
         print(f"Database error: {e}")
         return None
+    
+    except OSError as e:
+        print(f"File error: {e}")
+        return None
+   
+def employee_exists(path, employee_id):
+    try:
+        with sqlite3.connect(path) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM ujc WHERE id = ?", (employee_id, ))
+            row = cur.fetchone()
+            if row is not None:
+                return True
+            return False
+        
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
     
 if __name__ == "__main__":
     create_table(ujc_database)
@@ -215,11 +233,15 @@ if __name__ == "__main__":
             
             try:
                 employee_id = int(input("Please enter the employee's id number: "))
-                search_employees(ujc_database, employee_id)
-                choice = input("Confirm deletion (y/n)? ").strip().lower()
-                
-                if choice not in ("y", "yes"):
-                    print("Returning to main menu...")
+                result = employee_exists(ujc_database, employee_id)
+                if result:
+                    search_employees(ujc_database, employee_id)
+                    choice = input("Confirm deletion (y/n)? ").strip().lower()
+                    if choice not in ("y", "yes"):
+                        print("Returning to main menu...")
+                        continue
+                else:
+                    print("Employee not found.")
                     continue
                 
             except ValueError:
@@ -243,19 +265,9 @@ if __name__ == "__main__":
         else:
             print("Not a valid entry.")
             
-# 1 | ekaterina kosidowski | engineering | mechanical engineer | 120000 | contract
+# Example print out: 
+# 1 | ekaterina kostova | engineering | mechanical engineer | 120000 | contract
 
-# name, department, position, salary, status
-# 1. Add employee
-# 2. View employees
-# 3. Search employee
-# 4. Update employee
-# 5. Delete employee
-# 6. Exit
-
-# Fields like:
-# name
-# department
-# position
-# salary
-# status
+# Upcoming Features: 
+# Bulk CSV Import to allow rapid migration of legacy spreadsheet data.
+# Improved status validation
