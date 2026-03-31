@@ -34,3 +34,7 @@ Skills Demonstrated
 * Exporting structured data to CSV format
 * Working with Python standard library modules (sqlite3, csv, pathlib)
 * Input validation and basic data integrity checks
+
+Upcoming Features: 
+* Bulk CSV Import to allow rapid migration of legacy spreadsheet data.
+* Improved status validation

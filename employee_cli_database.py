@@ -265,9 +265,3 @@ if __name__ == "__main__":
         else:
             print("Not a valid entry.")
             
-# Example print out: 
-# 1 | ekaterina kostova | engineering | mechanical engineer | 120000 | contract
-
-# Upcoming Features: 
-# Bulk CSV Import to allow rapid migration of legacy spreadsheet data.
-# Improved status validation
