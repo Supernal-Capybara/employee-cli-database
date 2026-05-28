@@ -10,6 +10,7 @@ Features
 * Search for an employee by ID and display their full employee record
 * View all employees in a formatted, readable format
 * Export all employee data to a CSV file
+* Implemented recursive bulk CSV import with data validation, header validation, skipped-row reporting, and SQLite integration.
 
 Technologies Used
 * Python
@@ -36,5 +37,5 @@ Skills Demonstrated
 * Input validation and basic data integrity checks
 
 Upcoming Features: 
-* Bulk CSV Import to allow rapid migration of legacy spreadsheet data.
-* Improved status validation
+* Bulk CSV Import to allow rapid migration of legacy spreadsheet data. [Added: May 2026]
+* Improved status validation [Added: May 2026]

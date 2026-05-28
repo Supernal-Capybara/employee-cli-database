@@ -131,7 +131,86 @@ def employee_exists(path, employee_id):
     except sqlite3.Error as e:
         print(f"Database error: {e}")
         return False
+
+
+def bulk_import_folder(path, folder_path):
+    try:
+        with sqlite3.connect(path) as conn:
+            cur = conn.cursor()
+            
+            files = folder_path.rglob("*.csv")
+            successfully_imported = 0
+            processed_files = 0
+            
+            skipped = 0
+            skipped_report = []
+            
+            required_fields = {"name", "department", "position", "salary", "status"}
+
+            for f in files:
+                with open(f, "r", encoding="utf-8", newline="") as infile:
+                    reader = csv.DictReader(infile)
+                    csv_fields = set(reader.fieldnames or [])
+
+                    if not required_fields.issubset(csv_fields):
+                        skipped_report.append(f"Skipped file {f.name} | Reason: missing required columns")
+                        continue
+                
+                    for row in reader:
+                        name = (row["name"] or "").strip().lower()
+                        department = (row["department"] or "").strip().lower()
+                        position = (row["position"] or "").strip().lower()
+                        salary = row["salary"]
+                        status = (row["status"] or "").strip().lower()
+                        
+                        if not name:
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'name' missing: {row}")
+                            skipped += 1
+                            continue
+                        
+                        if not department:
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'department' missing: {row}")
+                            skipped += 1
+                            continue
+                        
+                        if not position:
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'position' missing: {row}")
+                            skipped += 1
+                            continue
+                        
+                        try:
+                            salary = int(salary)
+                        except (ValueError, TypeError):
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'salary' missing or invalid number: {row}")
+                            skipped += 1
+                            continue
+                        
+                        if not status:
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'status' missing: {row}")
+                            skipped += 1
+                            continue
+                        
+                        if status not in {"full-time", "part-time", "contract"}:
+                            skipped_report.append(f"Skipped row in {f.name} | Reason: 'status' must be 'full-time', 'part-time,' 'contract': {row}")
+                            skipped += 1
+                            continue
+                        
+                        successfully_imported += 1
+                        
+                        print(name, department, position, salary, status)
+                        
+                        cur.execute("INSERT INTO ujc (name, department, position, salary, status) VALUES (?,?,?,?,?)", 
+                                    (name, department, position, salary, status))
+
+                processed_files += 1
+                
+            return skipped_report, skipped, successfully_imported, processed_files
+            
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
     
+
 if __name__ == "__main__":
     create_table(ujc_database)
     
@@ -143,15 +222,16 @@ if __name__ == "__main__":
         print("4. Update an employee")
         print("5. Delete an employee")
         print("6. Export all employee data to CSV")
-        print("7. Exit")
+        print("7. Import CSVs")
+        print("8. Exit")
         
         try:
             user_choice = int(input("Please enter a number: "))
         except ValueError:
-            print("User must enter a number (1-7)")
+            print("User must enter a number (1-8)")
             continue
         
-        if user_choice == 7:
+        if user_choice == 8:
             print("Goodbye.")
             break
         
@@ -184,11 +264,17 @@ if __name__ == "__main__":
                     
             while True:
                 status = input("Please enter the employee's status (full-time, part-time, contract): ").strip().lower()
-                if status:
-                    break
-                print("You cannot leave the status field empty.")
-            
-            
+                
+                if not status:
+                    print("You cannot leave the status field empty.")
+                    continue
+                    
+                if status not in {"full-time", "part-time", "contract"}:
+                    print("'Status' must be 'full-time', 'part-time,' or 'contract'")
+                    continue
+                
+                break
+                        
             result = add_employee(ujc_database, name, department, position, salary, status)
             if result:
                 print("Employee added.")
@@ -261,6 +347,34 @@ if __name__ == "__main__":
                 print(f"Successfully written to path: {ujc_database_csv}")
             else:
                 print("File not saved.")
+                
+        elif user_choice == 7:
+            while True:
+                fp = BASE_DIR / Path(input("Please enter a folder path: "))
+                if fp.exists() and fp.is_dir():
+                    skipped_report, skipped, successfully_imported, processed_files = bulk_import_folder(ujc_database, fp)
+                    print("\nDatabase has been updated.\n")
+                    print(f"Processed {processed_files} csv files.")
+                    print(f"Successfully imported {successfully_imported} rows.")
+                    print(f"Skipped {skipped} rows.\n")
+                    for line in skipped_report:
+                        print(line)
+                        
+                    break
+                else:
+                    print("Please enter a valid path.")
+                    continue
+            
+# 1. Ask user for folder path
+# 2. Validate folder exists
+# 3. Find CSV files with rglob()
+# 4. Open SQLite connection once
+# 5. Loop through CSV files
+# 6. Loop through rows
+# 7. Clean/validate rows
+# 8. Insert valid rows
+# 9. Track imported/skipped counts
+# 10. Print summary
                 
         else:
             print("Not a valid entry.")
