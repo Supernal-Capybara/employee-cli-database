@@ -1,6 +1,6 @@
 # Employee Database (CLI Tool for HR and Managers)
 
-This is a full CRUD-style SQLite tool with a command-line interface.
+This is a SQLite-based employee management tool with a command-line interface.
 It is designed as a simple internal tool that can replace a hard-to-manage spreadsheet for tracking employee data.
 
 Features
@@ -10,7 +10,7 @@ Features
 * Search for an employee by ID and display their full employee record
 * View all employees in a formatted, readable format
 * Export all employee data to a CSV file
-* Implemented recursive bulk CSV import with data validation, header validation, skipped-row reporting, and SQLite integration.
+* Recursive bulk CSV import with header validation, row-level validation, skipped-row reporting, and SQLite integration
 
 Technologies Used
 * Python
@@ -27,15 +27,22 @@ Requirements:
 * Python installed (standard library modules are used; no external packages required)
 
 Notes:
-* The SQLite database and CSV export file are automatically created in the same directory as the script
+* The SQLite database and CSV export file are automatically created if they do not already exist
 
 Skills Demonstrated
 * SQLite CRUD operations (create, read, update, delete)
 * Building a CLI-based interface with input validation and error handling
 * Exporting structured data to CSV format
 * Working with Python standard library modules (sqlite3, csv, pathlib)
-* Input validation and basic data integrity checks
+* Input validation, data cleaning, and data integrity checks
+* Recursive file processing with pathlib
+* Bulk CSV import and ETL-style data workflows
 
-Upcoming Features: 
-* Bulk CSV Import to allow rapid migration of legacy spreadsheet data. [Added: May 2026]
-* Improved status validation [Added: May 2026]
+Recent Improvements: 
+* Bulk CSV Import to allow rapid migration of legacy spreadsheet data (May 2026)
+* Improved status validation (May 2026)
+
+Upcoming Features:
+* Duplicate employee detection
+* Department-level summary statistics 
+* Improved menu navigation 

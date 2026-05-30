@@ -124,9 +124,9 @@ def employee_exists(path, employee_id):
             cur = conn.cursor()
             cur.execute("SELECT * FROM ujc WHERE id = ?", (employee_id, ))
             row = cur.fetchone()
-            if row is not None:
-                return True
-            return False
+            
+            return row is not None
+            
         
     except sqlite3.Error as e:
         print(f"Database error: {e}")
@@ -196,9 +196,7 @@ def bulk_import_folder(path, folder_path):
                             continue
                         
                         successfully_imported += 1
-                        
-                        print(name, department, position, salary, status)
-                        
+                                                
                         cur.execute("INSERT INTO ujc (name, department, position, salary, status) VALUES (?,?,?,?,?)", 
                                     (name, department, position, salary, status))
 
@@ -304,9 +302,16 @@ if __name__ == "__main__":
                     
             while True:
                 status = input("Please enter the employee's status (full-time, part-time, contract): ").strip().lower()
-                if status:
-                    break
-                print("You cannot leave the status field empty.")
+                
+                if not status:
+                    print("You cannot leave the status field empty.")
+                    continue
+                    
+                if status not in {"full-time", "part-time", "contract"}:
+                    print("'Status' must be 'full-time', 'part-time,' or 'contract'")
+                    continue
+                
+                break
                 
             result = update_employee(ujc_database, employee_id, status)
             
@@ -350,11 +355,15 @@ if __name__ == "__main__":
                 
         elif user_choice == 7:
             while True:
-                fp = BASE_DIR / Path(input("Please enter a folder path: "))
+                # fp = BASE_DIR / Path(input("Please enter a folder path: "))
+                fp = Path(input("Please enter a folder path: "))
+                if not fp.is_absolute():
+                    fp = BASE_DIR / fp
+                    
                 if fp.exists() and fp.is_dir():
                     skipped_report, skipped, successfully_imported, processed_files = bulk_import_folder(ujc_database, fp)
                     print("\nDatabase has been updated.\n")
-                    print(f"Processed {processed_files} csv files.")
+                    print(f"Successfully processed {processed_files} csv files.")
                     print(f"Successfully imported {successfully_imported} rows.")
                     print(f"Skipped {skipped} rows.\n")
                     for line in skipped_report:
@@ -365,17 +374,6 @@ if __name__ == "__main__":
                     print("Please enter a valid path.")
                     continue
             
-# 1. Ask user for folder path
-# 2. Validate folder exists
-# 3. Find CSV files with rglob()
-# 4. Open SQLite connection once
-# 5. Loop through CSV files
-# 6. Loop through rows
-# 7. Clean/validate rows
-# 8. Insert valid rows
-# 9. Track imported/skipped counts
-# 10. Print summary
-                
         else:
             print("Not a valid entry.")
             
