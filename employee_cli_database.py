@@ -355,7 +355,6 @@ if __name__ == "__main__":
                 
         elif user_choice == 7:
             while True:
-                # fp = BASE_DIR / Path(input("Please enter a folder path: "))
                 fp = Path(input("Please enter a folder path: "))
                 if not fp.is_absolute():
                     fp = BASE_DIR / fp

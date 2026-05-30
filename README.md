@@ -44,4 +44,5 @@ Recent Improvements:
 Upcoming Features:
 * Duplicate employee detection
 * Department-level summary statistics 
-* Improved menu navigation 
+* Improve menu navigation 
+* Improve CSV export path options (offer default or custom via user input)
