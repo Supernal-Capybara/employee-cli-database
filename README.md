@@ -23,10 +23,10 @@ How to Run
 * Run the file: `employee_cli_database.py`
 * Follow the on-screen menu to select an option
 
-Requirements:
+Requirements
 * Python installed (standard library modules are used; no external packages required)
 
-Notes:
+Notes
 * The SQLite database and CSV export file are automatically created if they do not already exist
 
 Skills Demonstrated
@@ -37,11 +37,11 @@ Skills Demonstrated
 * Recursive file processing with pathlib
 * Bulk CSV import and ETL-style data workflows
 
-Recent Improvements: 
+Recent Improvements
 * Bulk CSV Import to allow rapid migration of legacy spreadsheet data (May 2026)
 * Improved status validation (May 2026)
 
-Upcoming Features:
+Upcoming Features
 * Duplicate employee detection
 * Department-level summary statistics 
 * Improve menu navigation 
