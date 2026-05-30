@@ -34,7 +34,6 @@ Skills Demonstrated
 * Building a CLI-based interface with input validation and error handling
 * Exporting structured data to CSV format
 * Working with Python standard library modules (sqlite3, csv, pathlib)
-* Input validation, data cleaning, and data integrity checks
 * Recursive file processing with pathlib
 * Bulk CSV import and ETL-style data workflows
 
