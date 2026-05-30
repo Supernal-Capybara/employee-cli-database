@@ -38,7 +38,7 @@ Skills Demonstrated
 * Bulk CSV import and ETL-style data workflows
 
 Recent Improvements
-* Bulk CSV Import to allow rapid migration of spreadsheet data (May 2026)
+* Bulk CSV import to allow rapid migration of spreadsheet data (May 2026)
 * Improved status validation (May 2026)
 
 Upcoming Features
